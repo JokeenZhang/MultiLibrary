@@ -1,0 +1,61 @@
+apply plugin: 'com.android.library'
+//apply plugin: 'com.novoda.bintray-release'
+apply plugin: 'com.github.panpf.bintray-publish'
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 30
+        versionCode versions.common_versions_code
+        versionName versions.common_versions_name
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation deps.androidx_view.constraintlayout
+    testImplementation deps.test.junit
+    androidTestImplementation deps.test.ext_junit
+    androidTestImplementation deps.espresso.core
+
+    implementation deps.app_compat
+    implementation deps.core_ktx
+    implementation deps.kotlin.stdlib
+    implementation deps.kotlin.stdlib_jdk7
+
+    implementation deps.lifecycle.runtime_ktx
+    // ViewModel
+    implementation deps.lifecycle.viewmodel_ktx
+    // LiveData
+    implementation deps.lifecycle.livedata_ktx
+}
+
+publish {
+    //Name需要和artiufactid一样
+    userOrg = config.common_userOrg//bintray.com用户名
+    repoName = config.common_repoName//bintray中创建的repo名称
+    groupId = config.common_groupId//jcenter上的路径
+    artifactId = config.common_artifactId//项目名称
+    publishVersion = versions.common_versions_name//版本号
+    desc = config.common_desc//描述，不重要
+    website = config.common_website//网站，不重要
+}
+
+//gradlew :common:clean build bintrayUpload -PbintrayUser=用户名 -PbintrayKey=输入个人的apiKey -PdryRun=false
+//gradlew clean build bintrayUpload -PbintrayUser=jok -PbintrayKey=a30cb508bd76e64ec1c938b085dabcd9baae6f8b -PdryRun=false
